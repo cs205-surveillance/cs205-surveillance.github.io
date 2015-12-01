@@ -22,12 +22,12 @@
         <table>
           <tr>
             <td>
-              <iframe width="476" height="268" src="https://www.youtube.com/embed/P-cg2WMaPZ0" frameborder="0" align="right"></iframe>
               <h1>CS205-Surveillance</h1>
               <h2>Training Machines to Keep Watch</h2>
               <img src="images/camera_icon.png" alt="Camera Icon">
             </td>
             <td>
+              <iframe width="420" height="236" src="https://www.youtube.com/embed/P-cg2WMaPZ0" frameborder="0" align="right"></iframe>
               <a href="https://github.com/cs205-surveillance/cs205-surveillance" class="button"><small>Code available on</small> GitHub</a>
             </td>
           </tr>
@@ -39,29 +39,48 @@
       <div class="inner clearfix">
         <section id="main-content">
           <h3>
-<a id="Project Overview" class="anchor" href="#project-overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Overview</h3>
-<p>Insert Video, stand in above</p>
-<p>Project Description. </p>
+<a id="project-overview" class="anchor" href="#project-overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Overview</h3>
+<p>In conjunction with the drive toward an Internet of Things (IoT) society has been a commoditization of surveillance technology. As camera and information systems technology has progressed, so to has the number and reliance on camera systems to monitor and protect public spaces such as city streets, secured private spaces such as an industrial complex, even people's homes. With the rise in surveillance technology, there is a greater need for autonomous monitoring of the data feeds coming from these monitoring system. The volume of data that is being recorded from deployed surveillance technology has outgrown the capacity of human operators. [<b>INSERT FACT ABOUT NYC/LONDON/ETC SURVEILLANCE CAMERAS</b>]. This is particularly true of facilities with multiple cameras monitoring perimeter security.</p>
+<figure>
+    <div id="sliderFrame" style="margin-bottom: 4em; margin-top: 2em">
+      <div id="slider">
+        <img src="images/oneguy_multimonitor.jpeg" alt="One guy, lots of work" />
+        <img src="images/oneguy_multimonitor2.jpeg" alt="What did they find?" />
+      </div>
+    </div>
+<figcaption>What can we expect this person to do in real time?</figcaption>
+</figure>
+
+<p>This project, completed for the Fall 2015 Harvard CS205 course, attempts to lend the building blocks to automate anomaly detection in surveilance video. The focus of this project, computationally, was to develop a detection algorithm that will run in real-time and provide decision support for an operator tasked with monitoring multiple camera feeds. To acheive real-time processing, detection and decision algorithms (catalogued below) were written in Python, leveraging the pycuda module to run on a designated NVIDIA Jetson TK1.</p>
 
 <h3>
-<a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<a id="prior-work" class="anchor" href="#prior-work" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prior Work/h3>
 
-<p>We’ve crafted some handsome templates for you to use. Go ahead and click 'Continue to layouts' to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved.</p>
-
-<h3>
-<a id="creating-pages-manually" class="anchor" href="#creating-pages-manually" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating pages manually</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<p>Outline academic background.</p>
 
 <h3>
-<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<a id="hardware-setup" class="anchor" href="#hardware-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hardware Setup/h3>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor’s GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<p>Outline how we got data.</p>
 
 <h3>
-<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+<a id="code-work-flow" class="anchor" href="#code-work-flow" aria-hidden="true"><span class="octicon octicon-link"></span></a>Code Work Flow</h3>
 
-<p>Having trouble with Pages? Check out our <a href="https://help.github.com/pages">documentation</a> or <a href="https://github.com/contact">contact support</a> and we’ll help you sort it out.</p>
+<p>Schematic with intermediate images demonstrating our process.</p>
+
+<p>Like this!</p>
+
+<img src="images/rga_output.png" align="center" />
+
+<h3>
+<a id="performance" class="anchor" href="#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h3>
+
+<p>Discuss performance gains from serial implementation to parallel...</p>
+
+<h3>
+<a id="summary-and-conclusions" class="anchor" href="#summary-and-conclusions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summary and Conclusions</h3>
+
+<p>Outline the cool stuff we learned and how we overcame any challenges that arose.</p>
         </section>
 
         <aside id="sidebar">
