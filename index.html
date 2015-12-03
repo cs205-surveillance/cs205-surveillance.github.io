@@ -50,7 +50,6 @@
         <img src="images/oneguy_multimonitor2.jpeg" alt="What did they find?" width="500" height="350" />
       </div>
     </div>
-<figcaption>What can we expect this person to do in real time?</figcaption>
 </figure>
 
 <p>This project, completed for the Fall 2015 CS205 course at Harvard University, attempts to provide a foundation to automate anomaly detection in surveilance video, utilizing contemporary methods of parallel computing. The focus of this project, computationally, was to develop a detection algorithm that will run in real-time and provide decision support for an operator tasked with monitoring multiple camera feeds. To acheive this desired benchmark the processing, detection and decision algorithms (catalogued below) were written in Python, leveraging the pycuda module, and run on a designated NVIDIA Jetson TK1.</p>
@@ -64,6 +63,24 @@
 <a id="hardware-setup" class="anchor" href="#hardware-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hardware Setup</h3>
 
 <p>Outline how we got data.</p>
+<p>We gathered simulated surveillance data by orienting a webcam to monitor an infrequently traversed sidewalk behind the Northwest Laboratory Building on the northern end of Harvard's campus.</p>
+
+<p><strong>Google Map Builder Demo - "Thirty By Ninety"</strong></p>
+<div id="map"></div>
+    <script type="text/javascript">
+
+var map;
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: -34.397, lng: 150.644},
+    zoom: 8
+  });
+}
+
+    </script>
+    <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTM4yN8n1RpTR7YGWe9X622ch4kAcqqOE&callback=initMap">
+    </script>
 
 <h3>
 <a id="code-work-flow" class="anchor" href="#code-work-flow" aria-hidden="true"><span class="octicon octicon-link"></span></a>Code Work Flow</h3>
