@@ -69,14 +69,14 @@
 <img src="images/surv_region.png" />
 
 <p> </p>
-<p>To process the images and determine any anomalous behavior, algorithms were implemented in Python's pycuda module and run on a specially designated NVIDIA Jetson TK1 GPU. This particular GPU was allocated with the intent of optimally parallelizing our algorithms with the goal of acheiving real-time processing, detection and identification. For our purposes real-time is analogous to process time less than or equal to the collection frame rate of 20 frames per second (fps).</p>
+<p>To process the images and determine any anomalous behavior, algorithms were implemented in Python's pycuda module and run on a specially designated NVIDIA Jetson TK1 GPU. This particular GPU was allocated with the intent of optimally parallelizing our algorithms with the goal of acheiving real-time processing, detection and identification. For our purposes real-time is analogous to process time less than or equal to a normal collection frame rate of 20 frames per second (fps).</p>
 
 <table style="width:100%" border="0">
   <col width="175">
   <col width="300">
   <tr>
     <td><img src="images/NWL_cameraLoc.png" alt="Monitoring location" height="300" width="225" align="center"/></td>
-    <td><p align="left">We collected a batch of 300 frames, each separated by 0.05 seconds (20 fps), at times when it was likely that individuals may be crossing through our monitoring area of interest. </p> 
+    <td><p align="left">We collected a batch of 300 frames, pausing for 200 milliseconds between frames (5 fps), at times when it was likely that individuals may be crossing through our monitoring area of interest. </p> 
       <p align="left"> With our image stack, we run each frame through the following process (to be described in greater detail below): 1) Compare, pixel-by-pixel, the intensity of the current frame against a running average of all previous frames. Identifying those outlying pixels that are significantly different from the mean intensity. 2) Perform a minimum filter to remove speckle noise. 3) Aggregate outlying pixels to form superpixels. If a majority of pixels in a superpixel are outliers, the entire superpixel is then marked anomalous. 4) Create overlay on original frame to designate anomalous region and alert surveillance operator. </p>
 
     </td> 
