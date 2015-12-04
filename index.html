@@ -56,13 +56,13 @@
 
 <p>This project, completed for the Fall 2015 CS205 course at Harvard University, attempts to provide a foundation to automate anomaly detection in surveilance video, utilizing contemporary methods of parallel computing. The focus of this project, computationally, was to develop a detection algorithm that will run in real-time and provide decision support for an operator tasked with monitoring multiple camera feeds. To acheive this desired benchmark the processing, detection and decision algorithms (catalogued below) were written in Python, leveraging the pycuda module, and run on a designated NVIDIA Jetson TK1.</p>
 
-<h3>
-<a id="prior-work" class="anchor" href="#prior-work" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prior Work</h3>
+<h2>
+<a id="prior-work" class="anchor" href="#prior-work" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prior Work</h2>
 
 <p>Outline academic background.</p>
 
-<h3>
-<a id="hardware-setup" class="anchor" href="#hardware-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hardware Setup</h3>
+<h2>
+<a id="hardware-setup" class="anchor" href="#hardware-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hardware Setup</h2>
 
 <p>We gathered simulated surveillance data by orienting a webcam to monitor an infrequently traversed sidewalk behind the Northwest Laboratory Building on the northern end of Harvard's campus.</p>
 
@@ -86,8 +86,8 @@
 
 
 
-<h3>
-<a id="code-work-flow" class="anchor" href="#code-work-flow" aria-hidden="true"><span class="octicon octicon-link"></span></a>Code Work Flow</h3>
+<h2>
+<a id="code-work-flow" class="anchor" href="#code-work-flow" aria-hidden="true"><span class="octicon octicon-link"></span></a>Code Work Flow</h2>
 
 <p>To detect, locate and determine anomalies in the surveillance feed frames are passed through the processes outlined below.</p>
 
@@ -104,7 +104,7 @@
 <img src="images/raw_img.jpeg" />
 
 
-<h4>1. Running Gaussian Average </h4>
+<h3>1. Running Gaussian Average </h3>
 <p> </p>
 
 <p>Passing an image through a <a href="https://en.wikipedia.org/wiki/Background_subtraction#Running_Gaussian_average">running gaussian average</a> is a conventional approach used to designate foreground pixels from those considered to be in the background. The background is calculated by updating the mean and variance of each pixel from subsequent frames, when that particular pixel doesn't differ from the prior mean (scaled by the variance) more than a specified threshold value.</p>
@@ -117,23 +117,23 @@
 <p>The running gaussian average serves to highlight all significant differences in our current from from that calculated background. What you can see in the image below is that the person and his shadow stand out, as does some rustling leaves in the trees due to some wind.</p>
 <img src="images/rga_img.jpeg" />
 
-<h4>2. 3x3 Minimum Filter</h4>
+<h3>2. 3x3 Minimum Filter</h3>
 <p> </p>
 <p>While the running gaussian average is generally robust to small variations in movement and light variations, the output of the running gaussian average is generally rife with speckle noise. To smooth out this noise, we applied a 3x3 <a href="http://www.roborealm.com/help/Min.php"> minimum filter </a>. That is, every pixel will take on the minimum value of the pixels that surround it. After passing through this filter, the frame is nearly absent of any noise caused by small variations in the background while prominently featuring our target.</p>
 <img src="images/filt_img.jpeg" />
 
-<h4>3. Aggregate into Superpixels and flag detected anomalies</h4>
+<h3>3. Aggregate into Superpixels and flag detected anomalies</h3>
 <p> </p>
 <p>In order to characterize whether the remaining pixels form an anomaly, the frame is segmented into <a href="https://www.google.com/webhp?sourceid=chrome-instant&ion=1&espv=2&es_th=1&ie=UTF-8#q=superpixel+segmentation">superpixels</a>, a collection of neighboring pixels. Superpixels can provide generic information about a larger region of pixels and are thereby used to infer general attributes about that region. We determine that a superpixel is an anomaly if a large portion of its members represent a foreground variation in our scene. This and all other detected anomalies are then flagged and used to highlight the surveillance operator.</p>
 <img src="images/final_img.jpeg" />
 
-<h3>
-<a id="performance" class="anchor" href="#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h3>
+<h2>
+<a id="performance" class="anchor" href="#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h2>
 
 <p>Discuss performance gains from serial implementation to parallel...</p>
 
-<h3>
-<a id="summary-and-conclusions" class="anchor" href="#summary-and-conclusions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summary and Conclusions</h3>
+<h2>
+<a id="summary-and-conclusions" class="anchor" href="#summary-and-conclusions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summary and Conclusions</h2>
 
 <p>Outline the cool stuff we learned and how we overcame any challenges that arose.</p>
         </section>
