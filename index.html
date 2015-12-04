@@ -108,17 +108,30 @@
 <h4>1. Running Gaussian Average </h4>
 <p> </p>
 
-<p>Passing an image through a <a href="https://en.wikipedia.org/wiki/Background_subtraction#Running_Gaussian_average">running gaussian average</a> is a conventional approach used to designate foreground pixels from those considered to be in the background. The background is calculated by updating the mean and variance of each pixel in subsequent frames, when that particular pixel doesn't differ from the prior mean (scaled by the variance) more than a specified threshold value.</p>
+<p>Passing an image through a <a href="https://en.wikipedia.org/wiki/Background_subtraction#Running_Gaussian_average">running gaussian average</a> is a conventional approach used to designate foreground pixels from those considered to be in the background. The background is calculated by updating the mean and variance of each pixel from subsequent frames, when that particular pixel doesn't differ from the prior mean (scaled by the variance) more than a specified threshold value.</p>
 
 <p>The output of a running gaussian average can either be a binary mask of foreground/background pixels or a continuous representation of each pixels deviation from the pixel mean, scaled by the variance of that pixel. In order to provide more dynamic thresholding later in the algorithm, we chose to return the latter.</p>
 
+<p>At the moment in time our visitor appears, the calculated background appears like this </p>
+<img src="images/mu_img.jpeg" />
+<p> </p>
+<p>The running gaussian average serves to highlight all significant differences in our current from from that calculated background. What you can see in the image below is that the person and his shadow stand out, as does some rustling leaves in the trees due to some wind.</p>
 <img src="images/rga_img.jpeg" />
 
 <h4>2. 3x3 Minimum Filter</h4>
+<p> </p>
+<p> </p>
+<img src="images/filt_img.jpeg" />
 
 <h4>3. Aggregate into Superpixels</h4>
+<p> </p>
+<p> </p>
+<img src="images/sp_img.jpeg" />
 
 <h4>4. Highlight detected anomalies</h4>
+<p> </p>
+<p> </p>
+<img src="images/final_img.jpeg" />
 
 <h3>
 <a id="performance" class="anchor" href="#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h3>
