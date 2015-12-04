@@ -91,8 +91,6 @@
 
 <p>To detect, locate and determine anomalies in the surveillance feed frames are passed through the processes outlined below.</p>
 
-<p> [INSERT ALGORITHM SCHEMATIC] </p>
-
 <ol>
   <li>Perform a running gaussian average discriminant on frame</li>
   <li>Pass frame through 3x3 minimum filter</li>
@@ -100,7 +98,7 @@
 </ol> 
 
 
-<p> We will walk through our algorithm with this representative frame, which includes an outsider inside our monitoring region</p>
+<p> We will walk through our algorithm with this representative frame, which includes an intrudet within our monitoring region</p>
 <img src="images/raw_img.jpeg" />
 
 
@@ -111,15 +109,15 @@
 
 <p>The output of a running gaussian average can either be a binary mask of foreground/background pixels or a continuous representation of each pixels deviation from the pixel mean, scaled by the variance of that pixel. In order to provide more dynamic thresholding later in the algorithm, we chose to return the latter.</p>
 
-<p>At the time our visitor appears, the calculated background appears like this </p>
+<p>At the time the intruder appears, the calculated background appears like this </p>
 <img src="images/mu_img.jpeg" />
 <p> </p>
-<p>The running gaussian average serves to highlight all significant differences in our current from from that calculated background. What you can see in the image below is that the person and his shadow stand out, as does some rustling leaves in the trees due to some wind.</p>
+<p>The running gaussian average serves to highlight all significant differences in the current frame from that calculated background. Any pixel that signifcantly varies from that will be highlighted after comparison with the background. What you see in the image below is that the intruder and his shadow stand out, as do the rustling leaves in the trees due to a slight breeze.</p>
 <img src="images/rga_img.jpeg" />
 
 <h3>2. 3x3 Minimum Filter</h3>
 <p> </p>
-<p>While the running gaussian average is generally robust to small variations in movement and light variations, the output of the running gaussian average is generally rife with speckle noise. To smooth out this noise, we applied a 3x3 <a href="http://www.roborealm.com/help/Min.php"> minimum filter </a>. That is, every pixel will take on the minimum value of the pixels that surround it. After passing through this filter, the frame is nearly absent of any noise caused by small variations in the background while prominently featuring our target.</p>
+<p>While the running gaussian average is generally robust to slight movements and light variations, the output of the running gaussian average is generally rife with speckle noise. To smooth out, and effectively account for this noise, we apply a 3x3 <a href="http://www.roborealm.com/help/Min.php"> minimum filter </a> to each frame after the running gaussian average. That is, every pixel will take on the minimum value of the pixels that surround it. After passing through this filter, the frame is nearly absent of any noise caused by small variations in the background while prominently featuring our target.</p>
 <img src="images/filt_img.jpeg" />
 
 <h3>3. Aggregate into Superpixels and flag detected anomalies</h3>
