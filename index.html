@@ -43,8 +43,8 @@
 <a id="project-overview" class="anchor" href="#project-overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Overview</h3>
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/P-cg2WMaPZ0" frameborder="0" allowfullscreen></iframe>
-
-<p>Alongside the push toward an <a href="https://en.wikipedia.org/wiki/Internet_of_Things">Internet of Things (IoT)</a> society, there has been a commoditization of surveillance technology. As camera and information systems technology has improved, there has been an increase in the number of camera systems used to monitor and protect public and private spaces alike. Common venues for surveillance include city streets, secured private spaces such as an industrial complex, and even individual residences. The volume of data that is being recorded from deployed surveillance technology has outgrown the capacity of human operators. With the rise in surveillance technology, there is a greater need for autonomous monitoring of the data feeds coming from these monitoring systems.  [<b>INSERT FACT ABOUT NYC/LONDON/ETC SURVEILLANCE CAMERAS</b>]. This is particularly true of facilities with multiple cameras distributed across various sites being fed into a central monitoring system.</p>
+<p> </p>
+<p>As society pushes toward the <a href="https://en.wikipedia.org/wiki/Internet_of_Things">Internet of Things (IoT)</a>, surveillance technology has been greatly commoditized. As camera and information systems technology has improved, there has been an increase in the number of camera systems used to monitor and protect public and private spaces alike. Common venues for surveillance include city streets, secured private spaces such as an industrial complex, and even individual residences. The volume of data that is being recorded from deployed surveillance technology has outgrown the capacity of human operators. With the rise in surveillance technology, there is a greater need for autonomous monitoring of the data feeds coming from these monitoring systems.  [<b>INSERT FACT ABOUT NYC/LONDON/ETC SURVEILLANCE CAMERAS</b>]. This is particularly true of facilities with multiple cameras distributed across various sites being fed into a central monitoring system.</p>
 <figure>
     <div id="sliderFrame" style="margin-bottom: 4em; margin-top: 2em">
       <div id="slider">
@@ -89,11 +89,36 @@
 <h3>
 <a id="code-work-flow" class="anchor" href="#code-work-flow" aria-hidden="true"><span class="octicon octicon-link"></span></a>Code Work Flow</h3>
 
-<p>Schematic with intermediate images demonstrating our process.</p>
+<p>To detect, locate and determine anomalies in the surveillance feed frames are passed through the processes outlined below.</p>
 
-<p>Like this!</p>
+<p> [INSERT ALGORITHM SCHEMATIC] </p>
 
-<img src="images/rga_output.png" align="center" />
+<ol>
+  <li>Perform a running gaussian average discriminant on frame</li>
+  <li>Pass frame through 3x3 minimum filter</li>
+  <li>Determine anomalous pixels through aggregated superpixels </li>
+  <li>Present augmented image, highlighting any anomalies, to operator </li>
+</ol> 
+
+
+<p> We will walk through our algorithm with this representative frame, which includes an outsider inside our monitoring region</p>
+<img src="images/raw_img.jpeg" />
+
+
+<h4>1. Running Gaussian Average </h4>
+<p> </p>
+
+<p>Passing an image through a <a href="https://en.wikipedia.org/wiki/Background_subtraction#Running_Gaussian_average">running gaussian average</a> is a conventional approach used to designate foreground pixels from those considered to be in the background. The background is calculated by updating the mean and variance of each pixel in subsequent frames, when that particular pixel doesn't differ from the prior mean (scaled by the variance) more than a specified threshold value.</p>
+
+<p>The output of a running gaussian average can either be a binary mask of foreground/background pixels or a continuous representation of each pixels deviation from the pixel mean, scaled by the variance of that pixel. In order to provide more dynamic thresholding later in the algorithm, we chose to return the latter.</p>
+
+<img src="images/rga_img.jpeg" />
+
+<h4>2. 3x3 Minimum Filter</h4>
+
+<h4>3. Aggregate into Superpixels</h4>
+
+<h4>4. Highlight detected anomalies</h4>
 
 <h3>
 <a id="performance" class="anchor" href="#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h3>
