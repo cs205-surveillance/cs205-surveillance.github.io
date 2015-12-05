@@ -38,6 +38,21 @@
     <meta name="msapplication-TileImage" content="favicons/mstile-144x144.png">
     <meta name="theme-color" content="#ffffff">
 
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        }
+
+      th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        }
+
+      tr:hover{background-color:#f5f5f5}
+    </style>
+
     <title>cs205-Surveillance</title>
   </head>
 
@@ -64,7 +79,7 @@
           <h2>
 <a id="project-overview" class="anchor" href="#project-overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Overview</h2>
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/P-cg2WMaPZ0" frameborder="0" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/1gcZOCZXyGs" frameborder="0" allowfullscreen></iframe>
 <p> </p>
 <p>As society pushes toward the <a href="https://en.wikipedia.org/wiki/Internet_of_Things">Internet of Things (IoT)</a>, surveillance technology has been greatly commoditized. As camera and information systems technology has improved, there has been an increase in the number of camera systems used to monitor and protect public and private spaces alike. Common venues for surveillance include city streets, secured private spaces such as an industrial complex, and even individual residences. The volume of data that is being recorded from deployed surveillance technology has outgrown the capacity of human operators. With the rise in surveillance technology, there is a greater need for autonomous monitoring of the data feeds coming from these monitoring systems.<!--[<b>INSERT FACT ABOUT NYC/LONDON/ETC SURVEILLANCE CAMERAS</b>].--> This is particularly true of facilities with multiple cameras distributed across various sites being fed into a central monitoring system.</p>
 <!--figure>
@@ -77,11 +92,6 @@
 </figure-->
 
 <p>This project, completed for the Fall 2015 CS205 course at Harvard University, attempts to provide a foundation to automate anomaly detection in surveilance video, utilizing contemporary methods of parallel computing. The focus of this project, computationally, was to develop a detection algorithm that will run in real-time and provide decision support for an operator tasked with monitoring multiple camera feeds. To acheive this desired benchmark the processing, detection and decision algorithms (catalogued below) were written in Python, leveraging the pycuda module, and run on a designated NVIDIA Jetson TK1.</p>
-
-<h2>
-<a id="prior-work" class="anchor" href="#prior-work" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prior Work</h2>
-
-<p>Outline academic background.</p>
 
 <h2>
 <a id="hardware-setup" class="anchor" href="#hardware-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hardware Setup</h2>
@@ -98,15 +108,13 @@
   <col width="300">
   <tr>
     <td><img src="images/NWL_cameraLoc.png" alt="Monitoring location" height="300" width="225" align="center"/></td>
-    <td><p align="left">We collected a batch of 300 frames, pausing for 200 milliseconds between frames (5 fps), at times when it was likely that individuals may be crossing through our monitoring area of interest. </p> 
-      <p align="left"> With our image stack, we run each frame through the following process (to be described in greater detail below): 1) Compare, pixel-by-pixel, the intensity of the current frame against a running average of all previous frames. Identifying those outlying pixels that are significantly different from the mean intensity. 2) Perform a minimum filter to remove speckle noise. 3) Aggregate outlying pixels to form superpixels. If a majority of pixels in a superpixel are outliers, the entire superpixel is then marked anomalous. 4) Create overlay on original frame to designate anomalous region and alert surveillance operator. </p>
+    <td><p align="left">To test our algorithm we collected batches of 300-400 frames, at 20 frames per second, at times when it was likely that individuals would be crossing through our monitoring area of interest. </p> 
+
+      <p align="left"> With our image stack, we run each frame through the following process (to be described in greater detail below): 1) Compare, pixel-by-pixel, the intensity of the current frame against a running average of all previous frames. Identifying those outlying pixels that are significantly different from the mean intensity. 2) Perform a minimum filter to remove speckle noise. 3) Aggregate outlying pixels to form superpixels. If a majority of pixels in a superpixel are outliers, the entire superpixel is then marked anomalous. 4) Create overlay on original frame to designate anomalous regions and alert surveillance operator. </p>
 
     </td> 
   </tr>       
 </table>
-
-
-
 
 <h2>
 <a id="code-work-flow" class="anchor" href="#code-work-flow" aria-hidden="true"><span class="octicon octicon-link"></span></a>Code Work Flow</h2>
@@ -120,7 +128,7 @@
 </ol> 
 
 
-<p> We will walk through our algorithm with this representative frame, which includes an intrudet within our monitoring region</p>
+<p> We will walk through our algorithm with this representative frame, which includes an intruder within our monitoring region.</p>
 <img src="images/raw_img.jpeg" />
 
 
@@ -131,7 +139,7 @@
 
 <p>The output of a running gaussian average can either be a binary mask of foreground/background pixels or a continuous representation of each pixels deviation from the pixel mean, scaled by the variance of that pixel. In order to provide more dynamic thresholding later in the algorithm, we chose to return the latter.</p>
 
-<p>At the time the intruder appears, the calculated background appears like this </p>
+<p>At the time the intruder appears, the calculated background appears like this: </p>
 <img src="images/mu_img.jpeg" />
 <p> </p>
 <p>The running gaussian average serves to highlight all significant differences in the current frame from that calculated background. Any pixel that signifcantly varies from that will be highlighted after comparison with the background. What you see in the image below is that the intruder and his shadow stand out, as do the rustling leaves in the trees due to a slight breeze.</p>
@@ -150,18 +158,73 @@
 <h2>
 <a id="performance" class="anchor" href="#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h2>
 
-<p>Discuss performance gains from serial implementation to parallel...</p>
+<p>When the idea of automating anomaly detection was conceived, implicit in the program design was to have the final algorithm be capable of online operation. To acheive that level of performance, the processing and determination of anomalies would ideally be completed in real-time. That is, there would be little or no lag between data acquisition and display of any anomalous behavoir. Our acquisition system was configured to 20 fps, setting our benchmark performance to 0.05 seconds of processing time per frame. </p>
+
+<p>To characterize the computational benefit of parallel operation on a GPU, we also implemented a serial implementation of our detection algorithm, utilizing the Numpy module of Python. As seen in the below chart, we were able to acheive a respectable 1.42 seconds per frame performance. We admit that one could certainly optimize this performance further by utilizing cython and other kinds of low-level wrappers in Python. We chose however to prioritize our benchmark of real-time processing on the GPU, and allocated our time and effort to that end.</p>
+
+<img src="images/PerformanceG.png" />
+
+<p> Our best (unoptimized) efforts of running our algorithm on the GPU provided an astounding 15x speedup over our native Python implementation. Our fastest processing time was 0.12 seconds per frame, accounting for the time taken to process the running gaussian average, 3x3 minimum filter and superpixel aggregation modules of our algorithm. We timed these modules separate from the loading and writing of each frame as we anticipate that these operations would be done asynchronously with a more powerful CPU than is included with the NVIDIA Jetson TK1 we were fortunate to have at our disposal. The same timing paradigm was used to measure the performance of our serial implementation.</p>
+
+<p>We were advised to further optimize our PyCUDA implementation by improving the superpixel aggregation module via better use of coalesced reads of memory and using parallel reduction instruction primitives native to NVIDIA's Kepler core. After implementing these optimizations we reduced our processing time by 10%, achieving 0.10 seconds per frame. Although we ultimately failed to meet our benchmark of 0.05 seconds per frame, we are extremely satisfied by the speed-up we acheived through parallel implementation of our algorithm in PyCUDA and C.</p>
+
+<p>Included below are tables outlining the performance of each module (per frame average) in our serial and parallel algorithm implementations respectively.</p>
+
+<table>
+  <tr>
+    <th>Module</th>
+    <th>Serial Alg. Time (s)</th>
+    <th>Parallel Alg. Time (s)</th>
+  </tr>
+  <tr>
+    <td>Running Gaussian Average</td>
+    <td>0.086950</td>
+    <td>0.015687</td>
+  </tr>
+  <tr>
+    <td>3x3 Minimum Filter</td>
+    <td>0.222865</td>
+    <td>0.021578</td>
+  </tr>
+  <tr>
+    <td>Superpixel Aggregation</td>
+    <td>1.126063</td>
+    <td>0.072363</td>
+  </tr>
+</table>
+
 
 <h2>
 <a id="summary-and-conclusions" class="anchor" href="#summary-and-conclusions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summary and Conclusions</h2>
 
-<p>Outline the cool stuff we learned and how we overcame any challenges that arose.</p>
-        </section>
+<p>The goal of this project was to automate anomaly detection in surveillance video, providing decision support to a human operator. Complimentary to that effort was to do so efficiently and in real-time. We feel as though we acheived our primary goal and are satisfied with the strides we made in driving our algorithm performance as close to the benchmark processing time of 0.05 seconds per frame as we ultimately were able to. We're grateful for the guidance we received from our professor <a href="http://people.seas.harvard.edu/~thouis/">Thouis (Ray) Jones</a>; his advice, instruction and energetic support of our efforts truly facilitated our success.</p>
+
+<h4>Image processing insights</h4>
+<p>Implementing most image processing methods are relatively intuitive and straightforward. However, doing so without accounting for subsequent use of the output can lead to unintended consequences. We learned that by sharing common steps across different modules in a process pipeline, the complete algorithm will perform in a much more streamlined and efficient manner. </p>
+
+<p>One improvement that we could make with our image processing algorithm would be to have a longer period of viewing time without any anomalous motion so as to calculate a more robust background scene. With this, we would be better able to account for large variation in lighting conditions. We found that at different times of day, the colors and intensity of each pixel changed drastically. This issue was magnified when we sampled frames at a less frequent rate.</p>
+
+<p> Another large issue we faced in processing our image data was the effect of extremely high and low intensity regions (think of sun reflections vs. shadows of surrounding buildings) of our background. When the foreground, or anomalous objects, crossed through these regions, the filtering and detection modules would alias the intersection, ultimately leading to a bias in favor of the background. One supposed fix to this is to preprocess our input frames by a localized neighborhood of each pixel, smoothing out large variances. Or in other words, by iteratively performing a median filter. </p>
+
+<h4>Parallelization insights</h4>
+<p>From this project we grew to appreciate the effort that goes into efficiently parallelizing code, most particularly when accounting for indexing across multiple threads. Managing this aspect of programming in CUDA was easily the most challenging for us. After many mistakes, misplaced output and misbehaving kernels we certainly bettered our practice over time. </p>
+
+<p>The largest barriers we faced when searching for faster performance were I/O and memory constraints. We didn't have the best throughput from CPU to GPU and back and found that we were limited by the ARM processor included with the Jetson TK1. We believe that if we were operating our algorithm with a more powerful processer, we could reduce the limitations we faced by asynchronously loading and processing the images across the GPU, reducing lag time and improving device efficiency. </p>
+
+<h4>Language insights</h4>
+<p>Our largest hesitation when undertaking this project was working within the CUDA and C programming languages. We had little to no experience with these languages before this project. We had little understanding of what a GPU was and how it could be leveraged to perform scientific computation. We're grateful for the opportunity we had to interact directly with such a device that was designated for this project. We are now much more familiar with some of the intricacies of these languages and what considerations one needs to take when utlizing such powerful code. </p>
+
+<p> We didn't begin to unravel the intrinsic power of NVIDIA's GPU architecture due to our lack of familiarity with CUDA and GPUs in general. We understand that there are significant improvements that could be made to our C/CUDA kernels but didn't have the time to discover or learn how to best use them. We are motivated to continue developing proficiency in these areas as we have seen first hand the benefit graphical processing provides to computational success.</p>
+
+</section>
 
         <aside id="sidebar">
 
 
-          <p>The content of this project was developed as a final project for Fall'15 Harvard CS205, completed by <a href="https://github.com/apetschek">Andrew Petschek</a>, <a href="https://github.com/1reinier"> Reinier Maat</a> and <a href="https://github.com/twkillian"> Taylor Killian</a>.</p>
+          <p>The content of this project was developed as a final project for the Fall'15 Harvard CS205 course, completed by <a href="https://github.com/apetschek">Andrew Petschek</a>, <a href="https://github.com/1reinier"> Reinier Maat</a> and <a href="https://github.com/twkillian"> Taylor Killian</a>.</p>
+
+          <p> We welcome any suggestions or other collaboration to improve our process and to further develop our code. Thanks for visiting!</p>
+
           <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
         </aside>
       </div>
