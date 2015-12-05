@@ -91,7 +91,7 @@
     </div>
 </figure-->
 
-<p>This project, completed for the Fall 2015 CS205 course at Harvard University, attempts to provide a foundation to automate anomaly detection in surveilance video, utilizing contemporary methods of parallel computing. The focus of this project, computationally, was to develop a detection algorithm that will run in real-time and provide decision support for an operator tasked with monitoring multiple camera feeds. To acheive this desired benchmark the processing, detection, and decision algorithms (catalogued below) were written in C and Python (leveraging the PyCUDA module) and run on a designated NVIDIA Jetson TK1.</p>
+<p>This project, completed for the Fall 2015 CS205 course at Harvard University, attempts to provide a foundation to automate anomaly detection in surveillance video, utilizing contemporary methods of parallel computing. The focus of this project, computationally, was to develop a detection algorithm that will run in real-time and provide decision support for an operator tasked with monitoring multiple camera feeds. To achieve this desired benchmark the processing, detection, and decision algorithms (catalogued below) were written in C and Python (leveraging the PyCUDA module) and run on a designated NVIDIA Jetson TK1.</p>
 
 <h2>
 <a id="hardware-setup" class="anchor" href="#hardware-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hardware Setup</h2>
@@ -101,7 +101,7 @@
 <img src="images/surv_region.png" />
 
 <p> </p>
-<p>To process the images and determine any anomalous behavior, algorithms were implemented in Python's PyCUDA module and run on a specially designated NVIDIA Jetson TK1 GPU. This particular GPU was allocated with the intent of optimally parallelizing our algorithms with the goal of acheiving real-time processing, detection, and identification. For our purposes, real-time is analogous to process time less than or equal to a normal collection frame rate of 20 frames per second (fps).</p>
+<p>To process the images and determine any anomalous behavior, algorithms were implemented in Python's PyCUDA module and run on a specially designated NVIDIA Jetson TK1 GPU. This particular GPU was allocated with the intent of optimally parallelizing our algorithms with the goal of achieving real-time processing, detection, and identification. For our purposes, real-time is analogous to process time less than or equal to a normal collection frame rate of 20 frames per second (fps).</p>
 
 <table style="width:100%" border="0">
   <col width="175">
@@ -142,12 +142,12 @@
 <p>At the time the intruder appears, the calculated background appears like this: </p>
 <img src="images/mu_img.jpeg" />
 <p> </p>
-<p>The running gaussian average serves to highlight all significant differences in the current frame from that calculated background. Any pixel that signifcantly varies from that will be highlighted after comparison with the background. What you see in the image below is that the intruder and his shadow stand out, as do the rustling leaves in the trees due to a slight breeze.</p>
+<p>The running gaussian average serves to highlight all significant differences in the current frame from that calculated background. Any pixel that significantly varies from that will be highlighted after comparison with the background. What you see in the image below is that the intruder and his shadow stand out, as do the rustling leaves in the trees due to a slight breeze.</p>
 <img src="images/rga_img.jpeg" />
 
 <h3>2. 3x3 Minimum Filter</h3>
 <p> </p>
-<p>While the running gaussian average is generally robust to slight movements and light variations, the output of the running gaussian average is generally rife with speckle noise. To smooth out the ouput and effectively account for this noise, we apply a 3x3 <a href="http://www.roborealm.com/help/Min.php"> minimum filter </a> to each frame after the running gaussian average. That is, every pixel will take on the minimum value of the adjacent pixels that surround it. After passing through this filter, the frame is nearly absent of any noise caused by small variations in the background while prominently featuring our target.</p>
+<p>While the running gaussian average is generally robust to slight movements and light variations, the output of the running gaussian average is generally rife with speckle noise. To smooth out the output and effectively account for this noise, we apply a 3x3 <a href="http://www.roborealm.com/help/Min.php"> minimum filter </a> to each frame after the running gaussian average. That is, every pixel will take on the minimum value of the adjacent pixels that surround it. After passing through this filter, the frame is nearly absent of any noise caused by small variations in the background while prominently featuring our target.</p>
 <img src="images/filt_img.jpeg" />
 
 <h3>3. Aggregate into Superpixels and flag detected anomalies</h3>
@@ -158,15 +158,15 @@
 <h2>
 <a id="performance" class="anchor" href="#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h2>
 
-<p>When the idea of automating anomaly detection was conceived, implicit in the program design was to have the final algorithm be capable of online operation. To acheive that level of performance, the processing and determination of anomalies would ideally be completed in real-time. That is, there would be little to no lag between data acquisition and display of any anomalous behavior. Our acquisition system was configured to 20 fps, setting our benchmark performance to 0.05 seconds of processing time per frame. </p>
+<p>When the idea of automating anomaly detection was conceived, implicit in the program design was to have the final algorithm be capable of online operation. To achieve that level of performance, the processing and determination of anomalies would ideally be completed in real-time. That is, there would be little to no lag between data acquisition and display of any anomalous behavior. Our acquisition system was configured to 20 fps, setting our benchmark performance to 0.05 seconds of processing time per frame. </p>
 
-<p>To characterize the computational benefit of parallel operation on a GPU, we also implemented a serial implementation of our detection algorithm, utilizing the NumPy package for scientific computing for Python. As seen in the below chart, we were able to achieve a respectable 1.47 seconds per frame performance. We admit that one could certainly optimize this performance further by utilizing cython and other kinds of low-level wrappers in Python. We chose however to prioritize our benchmark of real-time processing on the GPU, and allocated our time and effort to that end.</p>
+<p>To characterize the computational benefit of parallel operation on a GPU, we also implemented a serial implementation of our detection algorithm, utilizing the NumPy package for scientific computing for Python. As seen in the below chart, we were able to achieve a respectable 1.47 seconds per frame performance. We admit that one could certainly optimize this performance further by utilizing Cython and other kinds of low-level wrappers in Python. We chose however to prioritize our benchmark of real-time processing on the GPU, and allocated our time and effort to that end.</p>
 
 <img src="images/PerformanceG.png" />
 
 <p> Our initial results when running our algorithm on the GPU provided an astounding 15x speedup over our serial Python implementation. The average processing time was 0.12 seconds per frame, accounting for the time taken to process the running gaussian average, 3x3 minimum filter, and superpixel aggregation modules of our algorithm. We timed these modules separately from the loading and writing of each frame as we anticipate that these operations would be done asynchronously with a more powerful CPU than is included with the NVIDIA Jetson TK1. The same timing paradigm was used to measure the performance of our serial implementation.</p>
 
-<p>We were advised to further optimize our parallel implementation on the GPU by improving the superpixel aggregation module via better use of coalesced reads of memory and using parallel reduction instruction primitives native to NVIDIA's Kepler core. After implementing these optimizations we reduced our processing time by ~15%, achieving 0.10 seconds per frame. Although we ultimately failed to meet our benchmark of 0.05 seconds per frame, we are extremely satisfied by the speed-up we acheived through parallel implementation of our algorithm.</p>
+<p>We were advised to further optimize our parallel implementation on the GPU by improving the superpixel aggregation module via better use of coalesced reads of memory and using parallel reduction instruction primitives native to NVIDIA's Kepler core. After implementing these optimizations we reduced our processing time by ~15%, achieving 0.10 seconds per frame. Although we ultimately failed to meet our benchmark of 0.05 seconds per frame, we are extremely satisfied by the speed-up we achieved through parallel implementation of our algorithm.</p>
 
 <p>Included below are tables outlining the performance of each module (per frame average) in our serial and parallel algorithm implementations respectively.</p>
 
@@ -197,7 +197,7 @@
 <h2>
 <a id="summary-and-conclusions" class="anchor" href="#summary-and-conclusions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summary and Conclusions</h2>
 
-<p>The goal of this project was to automate anomaly detection in surveillance video, providing decision support to a human operator. Complementary to that effort was to do so efficiently and in real-time. We feel as though we acheived our primary goal and are satisfied with the strides we made in driving our algorithm performance as close to the benchmark processing time of 0.05 seconds per frame as we ultimately were able to. We're grateful for the guidance we received from our professor <a href="http://people.seas.harvard.edu/~thouis/">Thouis (Ray) Jones</a>; his advice, instruction, and energetic support of our efforts truly facilitated our success.</p>
+<p>The goal of this project was to automate anomaly detection in surveillance video, providing decision support to a human operator. Complementary to that effort was to do so efficiently and in real-time. We feel as though we achieved our primary goal and are satisfied with the strides we made in driving our algorithm performance as close to the benchmark processing time of 0.05 seconds per frame as we ultimately were able to. We're grateful for the guidance we received from our professor <a href="http://people.seas.harvard.edu/~thouis/">Thouis (Ray) Jones</a>; his advice, instruction, and energetic support of our efforts truly facilitated our success.</p>
 
 <h4>Image processing insights</h4>
 <p>Implementing most image processing methods are relatively intuitive and straightforward. However, doing so without accounting for subsequent use of the output can lead to unintended consequences. We learned that by sharing common steps across different modules in a process pipeline, the complete algorithm will perform in a much more streamlined and efficient manner. </p>
@@ -212,7 +212,7 @@
 <p>The largest barriers we faced when searching for faster performance were I/O and memory constraints. We didn't have the best throughput from CPU to GPU and back, and we found that we were limited by the ARM processor included with the Jetson TK1. Specifically the lack of an extensive linear algebra library for ARM in CUDA is what made us abandon a second anomaly detection approach using RPCA. We believe that if we were operating our algorithm with a more powerful x86 processor, we could circumvent this problem and reduce the limitations we faced by asynchronously loading and processing the images across the GPU, reducing lag time and improving device efficiency. </p>
 
 <h4>Language insights</h4>
-<p>Our largest hesitation when undertaking this project was working within the CUDA and C programming languages. We had little to no experience with these languages before this project. We had little understanding of how a GPU could be leveraged to perform scientific computation. We are grateful for this opportunity to interact directly with such a device that was designated for this project. We are now much more familiar with some of the intricacies of these languages and what considerations one needs to take when utlizing such powerful code. </p>
+<p>Our largest hesitation when undertaking this project was working within the CUDA and C programming languages. We had little to no experience with these languages before this project. We had little understanding of how a GPU could be leveraged to perform scientific computation. We are grateful for this opportunity to interact directly with such a device that was designated for this project. We are now much more familiar with some of the intricacies of these languages and what considerations one needs to take when using such powerful code. </p>
 
 <p>We understand that there are significant improvements that could be made to our C/CUDA kernels, and we are are motivated to continue developing proficiency in GPU programming as we have seen first-hand the benefit graphical processing can provide to computational success.</p>
 
