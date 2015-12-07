@@ -91,7 +91,7 @@
     </div>
 </figure-->
 
-<p>This project, completed for the Fall 2015 CS205 course at Harvard University, attempts to provide a foundation to automate anomaly detection in surveillance video, utilizing contemporary methods of parallel computing. The focus of this project, computationally, was to develop a detection algorithm that will run in real-time and provide decision support for an operator tasked with monitoring multiple camera feeds. To achieve this desired benchmark the processing, detection, and decision algorithms (catalogued below) were written in C and Python (leveraging the PyCUDA module) and run on a designated NVIDIA Jetson TK1.</p>
+<p>This project, completed for the Fall 2015 CS205 course at Harvard University, attempts to provide a foundation to automate anomaly detection in surveillance video, utilizing contemporary methods of parallel computing. The focus of this project, computationally, is to develop a detection algorithm that will run in real-time and provide decision support for an operator tasked with monitoring multiple camera feeds. To achieve this desired benchmark, the processing, detection, and decision algorithms (catalogued below) were written in C and Python (leveraging the PyCUDA module) and run on a designated NVIDIA Jetson TK1.</p>
 
 <h2>
 <a id="hardware-setup" class="anchor" href="#hardware-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hardware Setup</h2>
@@ -101,7 +101,7 @@
 <img src="images/surv_region.png" />
 
 <p> </p>
-<p>To process the images and determine any anomalous behavior, algorithms were implemented in Python's PyCUDA module and run on a specially designated NVIDIA Jetson TK1 GPU. This particular GPU was allocated with the intent of optimally parallelizing our algorithms with the goal of achieving real-time processing, detection, and identification. For our purposes, real-time is analogous to a process time of less than or equal to a normal collection frame rate of 20 frames per second (fps).</p>
+<p>To process the images and determine any anomalous behavior, algorithms were implemented in Python's PyCUDA module and run on a specially designated NVIDIA Jetson TK1 GPU. This particular GPU was allocated with the intent of optimally parallelizing our algorithms with the goal of achieving real-time processing, detection, and identification. For our purposes, real-time is analogous to a process time of less than or equal to a normal collection rate of 20 frames per second (fps).</p>
 
 <table style="width:100%" border="0">
   <col width="175">
@@ -110,7 +110,7 @@
     <td><img src="images/NWL_cameraLoc.png" alt="Monitoring location" height="300" width="225" align="center"/></td>
     <td><p align="left">To test our algorithm we collected batches of 300-400 frames, at 20 fps, at times when it was likely that individuals would be crossing through our monitoring area of interest. </p> 
 
-      <p align="left"> With our image stack, we ran each frame through the following process (to be described in greater detail below): 1) Compare, pixel-by-pixel, the intensity of the current frame against a running average of all previous frames, identifying those outlying pixels that are significantly different from the mean intensity. 2) Perform a minimum filter to remove speckle noise. 3) Aggregate outlying pixels to form superpixels. If a majority of pixels within a superpixel are outliers, then the entire superpixel is  marked anomalous. 4) Create an overlay on the original frame to mark anomalous regions and alert the surveillance operator. </p>
+      <p align="left"> With our image stack, we ran each frame through the following process (to be described in greater detail below): 1) Compare, pixel-by-pixel, the intensity of the current frame against a running average of all previous frames, identifying the outlying pixels that are significantly different from the mean intensity. 2) Perform a minimum filter to remove speckle noise. 3) Aggregate outlying pixels to form superpixels. If a majority of pixels within a superpixel are outliers, then the entire superpixel is marked anomalous. 4) Create an overlay on the original frame to mark anomalous regions and alert the surveillance operator. </p>
 
     </td> 
   </tr>       
@@ -204,7 +204,7 @@
 
 <p>One improvement that we could make with our image processing algorithm would be to have a longer period of viewing time without any anomalous motion so as to calculate a more robust background scene. With this, we would be better able to account for large variation in lighting conditions. We found that at different times of day, the colors and intensity of each pixel changed drastically. This issue was magnified when we sampled frames at a less frequent rate.</p>
 
-<p> Another large issue we faced in processing our image data was the effect of extremely high and low intensity regions (think of sun reflections vs. shadows of surrounding buildings) of our background. When anomalous objects crossed through these regions the filtering and detection modules would alias the intersection, ultimately leading to a bias in favor of the background. One supposed fix to this is to preprocess our input frames by a localized neighborhood of each pixel, smoothing out large variances. Or, in other words, by iteratively performing a median filter. </p>
+<p> Another large issue we faced in processing our image data was the effect of extremely high and low intensity regions (e.g., sun reflections vs. shadows of surrounding buildings) of our background. When anomalous objects crossed through these regions, the filtering and detection modules would alias the intersection, ultimately leading to a bias in favor of the background. One supposed fix to this is to preprocess our input frames by a localized neighborhood of each pixel, smoothing out large variances. Or, in other words, by iteratively performing a median filter. </p>
 
 <h4>Parallelization insights</h4>
 <p>From this project we grew to appreciate the effort that goes into efficiently parallelizing code, most particularly when accounting for indexing across multiple threads and blocks. Managing this aspect of programming in CUDA was easily the most challenging for us. </p>
