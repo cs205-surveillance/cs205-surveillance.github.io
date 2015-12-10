@@ -599,7 +599,7 @@ th {
 td {
   font-weight: 300;
   text-align: center;
-  border: 1px solid #ebebeb;
+  border: 0px solid #ebebeb;
 }
 
 form {
